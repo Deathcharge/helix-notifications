@@ -1,320 +1,93 @@
-# Helix Notifications
+# helix-notifications
 
-A comprehensive, production-ready notification system for the Helix Collective ecosystem. Send notifications across multiple channels with automatic retry logic, rate limiting, and delivery tracking.
+Notification system
 
-## Features
-
-✨ **Multi-Channel Delivery**
-- Email notifications
-- Webhook notifications
-- Discord integration
-- Slack integration
-- SMS notifications
-- Push notifications
-
-🔄 **Reliable Delivery**
-- Automatic retry with exponential backoff
-- Delivery tracking and status monitoring
-- Idempotency support
-- Failed notification queue
-
-⚡ **Performance**
-- Batch notification sending
-- Rate limiting
-- Async/await support
-- Efficient resource usage
-
-📋 **Developer Friendly**
-- Simple, intuitive API
-- Template support
-- Comprehensive logging
-- Type hints throughout
-
-## Installation
-
-```bash
-pip install helix-notifications
-```
-
-## Quick Start
-
-### Basic Email Notification
-
-```python
-from helix_notifications import NotificationService, NotificationPayload, NotificationChannel
-
-# Initialize service
-service = NotificationService()
-
-# Create notification
-notification = NotificationPayload(
-    channel=NotificationChannel.EMAIL,
-    recipient="user@example.com",
-    subject="Welcome to Helix",
-    body="Thank you for joining our platform!"
-)
-
-# Send notification
-success = await service.send(notification)
-```
-
-### Webhook Notification
-
-```python
-from helix_notifications import NotificationPayload, NotificationChannel
-
-# Send webhook
-webhook = NotificationPayload(
-    channel=NotificationChannel.WEBHOOK,
-    recipient="https://example.com/webhook",
-    subject="Event Notification",
-    body="An important event has occurred"
-)
+## 🎯 Overview
 
-await service.send(webhook)
-```
+This repository is part of the [Helix Collective](https://github.com/Deathcharge/helix-platform), a comprehensive ecosystem for building intelligent, multi-agent systems with consciousness frameworks and advanced LLM integration.
 
-### Alert Management
+## 🚀 Quick Start
 
-```python
-from helix_notifications import AlertSystem, Alert, AlertSeverity
+### Installation
 
-# Initialize alert system
-alerts = AlertSystem()
+\`\`\`bash
+git clone https://github.com/Deathcharge/helix-notifications.git
+cd helix-notifications
+pip install -r requirements.txt
+\`\`\`
 
-# Create alert
-alert = Alert(
-    id="alert-001",
-    title="High CPU Usage",
-    description="CPU usage exceeded 90%",
-    severity=AlertSeverity.CRITICAL,
-    source="monitoring-system"
-)
-
-await alerts.create_alert(alert)
-
-# Get active alerts
-critical_alerts = alerts.get_active_alerts(AlertSeverity.CRITICAL)
-```
-
-### Batch Notifications
-
-```python
-# Send multiple notifications at once
-payloads = [
-    NotificationPayload(
-        channel=NotificationChannel.EMAIL,
-        recipient=f"user{i}@example.com",
-        subject="Batch Notification",
-        body="This is a batch notification"
-    )
-    for i in range(100)
-]
-
-results = await service.send_batch(payloads)
-```
-
-## Configuration
-
-```python
-config = {
-    "email": {
-        "provider": "sendgrid",
-        "api_key": "your-api-key"
-    },
-    "webhook": {
-        "timeout": 30,
-        "max_retries": 3
-    },
-    "rate_limit": {
-        "requests_per_second": 100
-    }
-}
-
-service = NotificationService(config)
-```
-
-## API Reference
-
-### NotificationService
-
-Main service for sending notifications.
-
-**Methods:**
-- `send(payload: NotificationPayload) -> bool` - Send single notification
-- `send_batch(payloads: List[NotificationPayload]) -> Dict[str, bool]` - Send multiple notifications
-- `get_delivery_status(recipient: str) -> Optional[Dict]` - Get delivery status
-
-### EmailService
-
-Handle email notifications.
-
-**Methods:**
-- `send(to, subject, body, html, attachments) -> bool` - Send email
-- `send_template(to, template_id, context) -> bool` - Send templated email
-- `register_template(template_id, template)` - Register email template
-
-### AlertSystem
-
-Manage alerts and alert notifications.
-
-**Methods:**
-- `create_alert(alert: Alert) -> str` - Create new alert
-- `resolve_alert(alert_id: str)` - Resolve alert
-- `get_active_alerts(severity) -> List[Alert]` - Get active alerts
-
-### WebhookRouter
-
-Route webhooks to destinations.
-
-**Methods:**
-- `route(event_type, payload) -> bool` - Route webhook
-- `register_route(event_type, destination)` - Register webhook route
-
-## Notification Channels
-
-### Email
-- Subject and body support
-- HTML email support
-- File attachments
-- Template rendering
-
-### Webhook
-- HTTP POST delivery
-- Signature verification
-- Retry logic
-- Delivery tracking
-
-### Discord
-- Embed support
-- Channel routing
-- Mention support
-- Rich formatting
+### Basic Usage
 
-### Slack
-- Message formatting
-- Thread support
-- File uploads
-- Interactive elements
-
-### SMS
-- Character encoding
-- Delivery reports
-- Long message handling
-
-### Push
-- Device targeting
-- Badge support
-- Custom data
-- Deep linking
-
-## Error Handling
+See the [examples/](examples/) directory for working examples and integration patterns.
 
-```python
-try:
-    success = await service.send(notification)
-    if not success:
-        print("Notification failed to send")
-except Exception as e:
-    print(f"Error sending notification: {e}")
-```
+## 📚 Documentation
 
-## Retry Logic
+- **[Architecture](docs/ARCHITECTURE.md)** - System design and components
+- **[API Reference](docs/API.md)** - Complete API documentation
+- **[Integration Guide](docs/INTEGRATION.md)** - How to integrate with other Helix repos
+- **[Deployment](docs/DEPLOYMENT.md)** - Production deployment guide
+- **[Contributing](CONTRIBUTING.md)** - How to contribute
 
-Notifications automatically retry with exponential backoff:
+## 🔗 Related Repositories
 
-```python
-notification = NotificationPayload(
-    channel=NotificationChannel.EMAIL,
-    recipient="user@example.com",
-    subject="Test",
-    body="Test notification",
-    max_retries=5  # Retry up to 5 times
-)
-```
+- **[helix-platform](https://github.com/Deathcharge/helix-platform)** - Central hub and integration guide
+- **[helix-unified](https://github.com/Deathcharge/helix-unified)** - Main unified codebase
+- **[helix-core](https://github.com/Deathcharge/helix-core)** - Core utilities and LLM integration
 
-## Rate Limiting
+See [HELIX_REPOSITORY_INDEX.md](https://github.com/Deathcharge/helix-platform/blob/main/HELIX_REPOSITORY_INDEX.md) for the complete ecosystem map.
 
-Control notification throughput:
+## 🧪 Testing
 
-```python
-config = {
-    "rate_limit": {
-        "requests_per_second": 100,
-        "burst_size": 200
-    }
-}
+Run tests with pytest:
 
-service = NotificationService(config)
-```
+\`\`\`bash
+pytest tests/ -v --cov=src
+\`\`\`
 
-## Monitoring
+## 🔄 CI/CD
 
-Track notification delivery:
+This repository uses GitHub Actions for:
+- ✅ Automated testing (Python 3.9, 3.10, 3.11)
+- ✅ Code linting (flake8)
+- ✅ Type checking (mypy)
+- ✅ Security scanning (bandit, safety)
+- ✅ Coverage reporting (Codecov)
 
-```python
-# Get delivery status
-status = service.get_delivery_status("user@example.com")
+See [.github/workflows/ci.yml](.github/workflows/ci.yml) for details.
 
-# Check failed notifications
-failed = service.failed_notifications
+## 📋 Requirements
 
-# Access delivery log
-logs = service.delivery_log
-```
+- Python 3.9+
+- Dependencies listed in requirements.txt
+- Development dependencies in requirements-dev.txt
 
-## Integration with Helix Ecosystem
+## 🤝 Contributing
 
-helix-notifications integrates seamlessly with other Helix components:
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Development setup
+- Code style guide
+- Testing requirements
+- Pull request process
 
-```python
-# Use with helix-spirals for workflow notifications
-from helix_spirals import WorkflowEngine
-from helix_notifications import NotificationService
+## 📄 License
 
-workflow = WorkflowEngine()
-notifications = NotificationService()
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-# Send notification on workflow completion
-await notifications.send(notification)
-```
+## 🆘 Support
 
-## Best Practices
+- **Issues**: Report bugs or request features via [GitHub Issues](https://github.com/Deathcharge/helix-notifications/issues)
+- **Discussions**: Ask questions in [GitHub Discussions](https://github.com/Deathcharge/helix-notifications/discussions)
+- **Documentation**: See the [docs/](docs/) directory
+- **Ecosystem**: Visit [helix-platform](https://github.com/Deathcharge/helix-platform)
 
-1. **Use Templates** - Pre-define notification templates for consistency
-2. **Batch Operations** - Send multiple notifications in batches for efficiency
-3. **Error Handling** - Always handle notification failures gracefully
-4. **Rate Limiting** - Respect rate limits to avoid service degradation
-5. **Monitoring** - Track delivery status and failed notifications
-6. **Testing** - Use mock services for testing
+## 🎓 Learn More
 
-## Performance Considerations
+- [Helix Collective Repository Index](https://github.com/Deathcharge/helix-platform/blob/main/HELIX_REPOSITORY_INDEX.md)
+- [Architecture Guide](https://github.com/Deathcharge/helix-platform/blob/main/docs/ARCHITECTURE.md)
+- [Integration Examples](https://github.com/Deathcharge/helix-platform/tree/main/examples)
 
-- Batch notifications for better throughput
-- Use async/await for non-blocking operations
-- Configure appropriate retry limits
-- Monitor delivery logs for issues
-- Use rate limiting to prevent overload
+---
 
-## Security
-
-- Webhook signatures for verification
-- API key management
-- Secure credential storage
-- Rate limiting to prevent abuse
-- Input validation
-
-## Contributing
-
-Contributions are welcome! Please see CONTRIBUTING.md for guidelines.
-
-## License
-
-Dual licensed under Apache 2.0 and Proprietary License. See LICENSE and LICENSE.PROPRIETARY for details.
-
-## Support
-
-For issues, questions, or contributions, please visit:
-- GitHub: https://github.com/Deathcharge/helix-notifications
-- Documentation: https://helix-notifications.readthedocs.io
-- Issues: https://github.com/Deathcharge/helix-notifications/issues
+**Status**: ✅ Production Ready  
+**Last Updated**: June 19, 2026  
+**Maintainer**: Helix Collective Contributors
